@@ -1,0 +1,40 @@
+Sys.setenv(TZ = "UTC") #Define Timezone
+Sys.setenv(ORA_SDTZ = "UTC") #Define Oracle timezone
+Sys.setenv(TNS_ADMIN = "/usr/lib/oracle/12.1/client64/network/admin") #For Linux 
+Sys.setenv(NLS_LANG = "BRAZILIAN PORTUGUESE_BRAZIL.AL32UTF8") 
+library(ROracle)
+
+# First Option - As String
+# host <- "xx.xxx.xx.xx"
+# port <- yyyy
+# service <- "zzz"
+
+#dbDriver("Oracle")
+
+#connect.string <- paste(
+#   
+#   "(DESCRIPTION=",
+#   
+#   "(ADDRESS=(PROTOCOL=tcp)(HOST=", host, ")(PORT=", port, "))",
+#   
+#   "(CONNECT_DATA=(SERVICE_NAME=", service, ")))", sep = "")
+# 
+# con <- dbConnect(drv, username = rstudioapi::askForPassword("USER"), 
+#                  password = rstudioapi::askForPassword("PASSWORD"), 
+#                  dbname = connect.string, 
+#                  bulk_read = 32767L, 
+#                  bulk_write = 32767L)
+#rm(host, port, service, drv, connect.string)
+
+
+# Second Option - TNS 
+
+drv <- Oracle() 
+
+con <- dbConnect(drv, username = rstudioapi::askForPassword("USER"), 
+                 password = password = rstudioapi::askForPassword("PASSWORD"), 
+                 dbname = "zzz", 
+                 bulk_read = 32767L, 
+                 bulk_write = 32767L)
+
+rm(drv)
