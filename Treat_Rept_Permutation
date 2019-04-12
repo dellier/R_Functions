@@ -1,0 +1,15 @@
+#This Function recives an array of strings as input, and delivers a array with the permutation repetitions removed and ordered
+#using only the Base R functions
+array_func <- function(x) {
+
+y <- vector(mode = "character")
+final_array <- vector(mode = "character")
+for (i in my_array) {
+  if (!paste(sort(strsplit(i, split = "")[[1]]), collapse = "") %in% y) {
+  y <- append(y, paste(sort(strsplit(i, split = "")[[1]]), collapse = ""))
+  final_array <- append(final_array,i) }
+
+  }
+
+return(final_array)
+  }
