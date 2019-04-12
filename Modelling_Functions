@@ -1,0 +1,45 @@
+# modelling
+library(caret) # modelling
+library(MLmetrics) # gini metric
+library(Information) #IV
+library(InformationValue) #KS
+library(corrplot) # visualisation
+
+# function to extract binomial confidence levels
+get_binCI <- function(x,n) as.list(setNames(binom.test(x,n)$conf.int, c("lwr", "upr")))
+
+grafico_bivariada_categorico <- function(variavel, target, dataset) {
+  
+  dataset %>%
+    group_by(!!sym(variavel), !!sym(target))%>%
+    summarise(QTD = n())%>%
+    group_by(!!sym(variavel))%>%
+    mutate(TOTAL_CAT = sum(QTD))%>%
+    filter(!!sym(target) == "YES")%>%
+    mutate(QTD = ifelse(is.na(QTD), 0, QTD), per = QTD/TOTAL_CAT, lwr = get_binCI(QTD, TOTAL_CAT)[[1]], upr = get_binCI(QTD, TOTAL_CAT)[[2]])%>%
+    ggplot(aes(x = !!sym(variavel), y = per, fill = !!sym(variavel)))+
+    geom_col()+
+    geom_errorbar(aes(ymin = lwr, ymax = upr), width =0.5, size = 0.7, color = "gray30")+
+    scale_y_continuous(labels = percent_format())+
+    labs(title = paste("Percentual de", variavel), y = "")+
+    theme(legend.position = "none")+
+    theme_bw()
+  
+}
+
+
+
+grafico_bivariada_continuo <- function(variavel, target, dataset) {
+  
+  l <- dataset %>% select(!!sym(variavel)) %>% pull(.) %>% quantile(., c(.01, .95))
+  
+  dataset %>%
+    ggplot(aes(x = !!sym(target), y = !!sym(variavel), fill = !!sym(target)))+
+    geom_boxplot(outlier.shape = NA)+
+    scale_y_continuous(labels = comma_format())+
+    labs(title = paste("Distribuição", variavel), y = "")+
+    theme(legend.position = "none")+
+    coord_cartesian(ylim = c(l[[1]], l[[2]]))+
+    theme_bw()
+  
+}
